@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-br" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Higor Brito | Engenheiro de Software</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SwiperJS for the new slider -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Asimovian&family=Crimson+Text:ital,wght@0,400;0,600;0,700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        /* --- Design System & Dark Mode --- */
+        :root {
+            --bg: #f4f4f5; /* Light Gray */
+            --bg-secondary: #ffffff;
+            --text-dark: #18181b; /* Zinc 900 */
+            --text-light: #52525b; /* Zinc 600 */
+            --accent-dark: #18181b;
+            --accent-light: #e4e4e7; /* Zinc 200 */
+            --font-display: 'Asimovian', sans-serif;
+            --font-body: 'Crimson Text', serif;
+            --font-mono: 'Roboto Mono', monospace;
+        }
+
+        html.dark {
+            --bg: #18181b;
+            --bg-secondary: #27272a;
+            --text-dark: #f4f4f5;
+            --text-light: #a1a1aa;
+            --accent-dark: #f4f4f5;
+            --accent-light: #3f3f46;
+        }
+
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto !important; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg);
+            color: var(--text-dark);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Texture overlay */
+        body::after {
+            content: "";
+            position: fixed; top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: url('https://www.transparenttextures.com/patterns/black-felt.png') repeat;
+            opacity: 0.08;
+            pointer-events: none; z-index: -1;
+        }
+        html.dark body::after { opacity: 0.05; }
+
+        /* Applying custom fonts */
+        .font-display { font-family: var(--font-display); }
+        .font-body { font-family: var(--font-body); }
+        .font-mono { font-family: var(--font-mono); }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-mono); font-weight: 500;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: var(--text-dark);
+        }
+        
+        .hero-h1 { font-family: var(--font-display); font-size: 6rem; text-transform: uppercase; line-height: 1; }
+        .hero-h2 { font-family: var(--font-body); text-transform: none; letter-spacing: normal; color: var(--text-light); }
+        
+        .bg-main { background-color: var(--bg); }
+        .bg-secondary { background-color: var(--bg-secondary); }
+        .text-main { color: var(--text-dark); }
+        .text-secondary { color: var(--text-light); }
+        .border-main { border-color: var(--accent-light); }
+
+        /* --- Animations & Transitions --- */
+        .section-fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .section-fade-in.visible { opacity: 1; transform: translateY(0); }
+        .modal { transition: opacity 0.3s ease, visibility 0.3s ease; }
+        .modal-content { transition: transform 0.3s ease, opacity 0.3s ease; }
+        .nav-link::before {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 100%; height: 1px; background-color: var(--text-dark);
+            transform: scaleX(0); transition: transform 0.3s ease-in-out;
+        }
+        .nav-link:hover::before { transform: scaleX(1); }
+        .project-card:hover .project-image { transform: scale(1.03); }
+
+        /* --- New Components & Overrides --- */
+        .dark-solid-modal {
+            background-color: rgba(20, 20, 20, 0.9);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-solid-modal {
+            background-color: rgba(244, 244, 245, 0.9);
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Timeline */
+        .timeline-item { position: relative; padding-left: 2.5rem; }
+        .timeline-item:not(:last-child) { padding-bottom: 2rem; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: 0; top: 0.25rem;
+            width: 1px; height: 100%; background-color: var(--accent-light);
+        }
+        .timeline-dot {
+            position: absolute; left: -0.45rem; top: 0.30rem;
+            width: 0.9rem; height: 0.9rem; border-radius: 9999px;
+            background-color: var(--bg); border: 2px solid var(--accent-dark);
+        }
+
+        /* Skills */
+        .skill-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--accent-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .skill-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+        }
+        html.dark .skill-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -2px rgba(0,0,0,0.2);
+        }
+        
+        /* Dark Mode Toggle Switch */
+        .toggle-switch { width: 50px; height: 26px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 34px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #4a4a4a; }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* --- Slider Section CSS (unchanged) --- */
+        .wrapper-slider { position: relative; width: 100%; margin: auto; color: #262626; background: black; font-family: "Poppins", sans-serif; }
+        .wrapper-slider .item { position: relative; width: 100vw; height: 100vh; padding-left: 2rem; padding-right: 2rem; }
+        .wrapper-slider .item picture, .wrapper-slider .item .video { position: absolute; inset: 0; width: 100%; height: 100%; }
+        .wrapper-slider .item picture::before, .wrapper-slider .item .video::before { content: ''; position: absolute; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); inset: 0; z-index: 1; }
+        .wrapper-slider .parent-text { padding: 3rem 2rem; position: absolute; bottom: 100px; left: 0; right: 0; z-index: 2; color: white; max-width: 1200px; margin: auto; }
+        .wrapper-slider .parent-text .info-text { display: flex; flex-direction: column; gap: 0.5rem; }
+        .wrapper-slider .parent-text h2 { text-transform: uppercase; font-size: 39px; font-weight: 300; font-family: "Poppins", sans-serif; color: white; }
+        .wrapper-slider .parent-text p { font-size: 21px; font-weight: 300; }
+        .wrapper-slider .parent-text a { width: 100%; max-width: 172px; height: 55px; font-size: 14px; margin-top: 3rem; display: flex; align-items: center; justify-content: center; background: white; text-decoration: none; transition: 0.3s ease; color: #262626; }
+        .wrapper-slider .parent-text a:hover { background: #ebebeb; color: #4c4c4c; }
+        .wrapper-slider .swiper-pagination { width: 100%; bottom: 5rem !important; display: flex; align-items: center; gap: 0.5rem; font-size: 14px; font-weight: 500; padding-inline: 4rem; }
+        .wrapper-slider .swiper-pagination .svg-icon path { fill: white; }
+        .wrapper-slider .swiper-pagination-bullet { color: white; opacity: 1; width: initial; height: initial; background: transparent; }
+        .wrapper-slider .swiper-pagination-bullet button { background: transparent; border: 0; display: flex; cursor: pointer; }
+        .wrapper-slider .bullet-content { display: flex; align-items: center; justify-content: center; }
+        .wrapper-slider .icon { position: absolute; z-index: 1; }
+        .percentage { --colorf3: #ffffff; --color13: #1f1f1f; width: 3.4rem; aspect-ratio: 1; mask: radial-gradient(transparent 55%, black 60% 100%); -webkit-mask: radial-gradient(transparent 55%, black 60% 100%); transition: opacity 0.6s ease; opacity: 0; background: conic-gradient(transparent 0, transparent var(--p), #c9d6d7 0), conic-gradient(var(--colorf3), #ffffff, #ffffff, #ffffff, var(--colorf3)), conic-gradient(transparent, transparent 10%); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .percentage.show { opacity: 1; }
+        .percentage .number { width: 80%; aspect-ratio: 1; display: inherit; align-items: inherit; justify-content: inherit; background: white; border-radius: inherit; font-size: 16px; font-style: normal; font-weight: 800; line-height: 24px; color: var(--color13); }
+        
+        /* --- Zoom Parallax Styles (unchanged) --- */
+        #gallery-container { position: relative; height: 300vh; background-color: var(--bg); }
+        #gallery-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; }
+        .gallery-image-wrapper { position: absolute; top: 0; display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; }
+        .gallery-image-wrapper > div { position: relative; height: 25vh; width: 25vw; }
+        .gallery-image-wrapper > div > img { height: 100%; width: 100%; object-fit: cover; }
+        .gallery-image-wrapper-1 > div { top: -30vh !important; left: 5vw !important; height: 30vh !important; width: 35vw !important; }
+        .gallery-image-wrapper-2 > div { top: -10vh !important; left: -25vw !important; height: 45vh !important; width: 20vw !important; }
+        .gallery-image-wrapper-3 > div { top: 0 !important; left: 27.5vw !important; height: 25vh !important; width: 25vw !important; }
+        .gallery-image-wrapper-4 > div { top: 27.5vh !important; left: 5vw !important; height: 25vh !important; width: 20vw !important; }
+        .gallery-image-wrapper-5 > div { top: 27.5vh !important; left: -22.5vw !important; height: 25vh !important; width: 30vw !important; }
+        .gallery-image-wrapper-6 > div { top: 22.5vh !important; left: 25vw !important; height: 15vh !important; width: 15vw !important; }
+    </style>
+</head>
+<body class="overflow-x-hidden antialiased bg-main text-main">
+
+    <!-- Main Content -->
+    <div id="content">
+        <!-- Header -->
+        <header class="fixed top-0 left-0 right-0 z-40 bg-main/80 backdrop-blur-sm">
+            <nav class="container mx-auto px-6 py-5 flex justify-between items-center">
+                <a href="#" class="transition-transform duration-300 hover:scale-105">
+                    <img src="https://raw.githubusercontent.com/HigorJB/source-img/refs/heads/main/logohb.png" alt="Logo HB" class="h-10 w-auto">
+                </a>
+                <div class="hidden md:flex items-center space-x-8 font-mono text-sm uppercase">
+                    <a href="#about" class="nav-link relative text-secondary hover:text-main transition-colors" data-lang-key="navAbout">Sobre</a>
+                    <a href="#timeline" class="nav-link relative text-secondary hover:text-main transition-colors" data-lang-key="timelineTitle">Timeline</a>
+                    <a href="#experience" class="nav-link relative text-secondary hover:text-main transition-colors" data-lang-key="navExperience">Experiência</a>
+                    <a href="#projects" class="nav-link relative text-secondary hover:text-main transition-colors" data-lang-key="navProjects">Projetos</a>
+                    <a href="#contact" class="bg-[#1e1e1e] text-white font-medium py-2 px-5 rounded-sm hover:bg-black transition-all duration-300 dark:bg-gray-200 dark:text-black dark:hover:bg-white" data-lang-key="navContact">Contato</a>
+                </div>
+                <div class="md:hidden">
+                     <a href="#contact" class="bg-[#1e1e1e] text-white font-medium py-2 px-4 rounded-sm hover:bg-black transition-all duration-300 font-mono uppercase text-sm dark:bg-gray-200 dark:text-black dark:hover:bg-white" data-lang-key="navContactMobile">Contato</a>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Hero Section -->
+            <section id="hero" class="container mx-auto px-6 min-h-screen flex flex-col justify-center text-left pt-20">
+                <div class="max-w-4xl">
+                    <h1 class="hero-h1 text-5xl md:text-7xl lg:text-8xl font-black mb-4" data-lang-key="heroName">
+                        Higor Brito.
+                    </h1>
+                    <h2 class="hero-h2 text-3xl md:text-4xl lg:text-5xl font-semibold mb-6" data-lang-key="heroSubtitle">
+                        Eu construo soluções para a web.
+                    </h2>
+                    <p class="text-lg text-secondary mb-10 max-w-xl leading-relaxed" data-lang-key="heroDescription">
+                        Sou um engenheiro de software focado em criar experiências digitais excepcionais. Atualmente, minha paixão está em desenvolver produtos acessíveis e centrados no ser humano.
+                    </p>
+                    <div class="flex items-center space-x-6">
+                        <a href="https://linkedin.com/in/higorbrito" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-main transition-transform duration-300 hover:scale-110" aria-label="LinkedIn"><i class="fa-brands fa-linkedin text-3xl"></i></a>
+                        <a href="mailto:contato@higorbrito.com" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-main transition-transform duration-300 hover:scale-110" aria-label="Email"><i class="fa-solid fa-envelope text-3xl"></i></a>
+                        <a href="https://open.spotify.com/" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-main transition-transform duration-300 hover:scale-110" aria-label="Spotify"><i class="fa-brands fa-spotify text-3xl"></i></a>
+                        <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" class="text-secondary hover:text-main transition-transform duration-300 hover:scale-110" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp text-3xl"></i></a>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- About Section -->
+            <section id="about" class="py-20 md:py-32 section-fade-in container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6" data-lang-key="aboutTitle">Sobre Mim</h2>
+                    <p class="text-xl text-secondary leading-relaxed" data-lang-key="aboutText">
+                        Olá! Sou Higor Brito, Engenheiro de Software focado em transformar ideias complexas em produtos digitais intuitivos e de alta performance. Minha expertise abrange desde o desenvolvimento web e mobile até soluções avançadas de Machine Learning e automação com RPA, sempre buscando o equilíbrio perfeito entre inovação, design e funcionalidade.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Timeline Section -->
+            <section id="timeline" class="py-20 md:py-32 section-fade-in container mx-auto px-6">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center" data-lang-key="timelineTitle">Linha do Tempo Profissional</h2>
+                    <div class="max-w-xl mx-auto">
+                        <div class="timeline-item">
+                            <div class="timeline-dot"></div>
+                            <p class="font-mono text-sm text-secondary mb-1">2025 - Presente</p>
+                            <h3 class="text-xl font-bold mb-2">Desenvolvedor Java Sênior</h3>
+                            <p class="text-secondary leading-relaxed">Liderando o desenvolvimento de microsserviços robustos e escaláveis utilizando o ecossistema Java, com foco em arquitetura de alta performance.</p>
+                        </div>
+                        <div class="timeline-item">
+                             <div class="timeline-dot"></div>
+                            <p class="font-mono text-sm text-secondary mb-1">2024 - 2025</p>
+                            <h3 class="text-xl font-bold mb-2">Analista de Software</h3>
+                            <p class="text-secondary leading-relaxed">Atuando no levantamento de requisitos, modelagem e documentação de sistemas, garantindo a ponte entre as necessidades de negócio e a equipe de desenvolvimento.</p>
+                        </div>
+                         <div class="timeline-item">
+                             <div class="timeline-dot"></div>
+                            <p class="font-mono text-sm text-secondary mb-1">2022 - 2023</p>
+                            <h3 class="text-xl font-bold mb-2">Analista de QA focado em RPA e análise de dados</h3>
+                            <p class="text-secondary leading-relaxed">Responsável por garantir a qualidade de automações (RPA) e pela análise de dados para identificar oportunidades de melhoria nos processos.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- NEW: Experience & Tech Carousel Section -->
+            <section id="experience" class="py-20 md:py-32 section-fade-in container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center" data-lang-key="experienceTitle">Empresas e Tecnologias</h2>
+                    <div id="logo-carousel-container" class="flex flex-wrap justify-center items-center gap-x-8 gap-y-12 md:gap-x-16">
+                        <!-- JavaScript will populate this area with logo columns -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="py-20 md:py-32 section-fade-in container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-16 text-center" data-lang-key="projectsTitle">Projetos em Destaque</h2>
+                    <div class="space-y-20">
+                        <div class="project-card grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                             <div class="md:order-2">
+                                 <h3 class="text-2xl font-bold text-main mb-3" data-lang-key="project1Title">Análise Preditiva de Vendas</h3>
+                                 <p class="text-secondary mb-6 leading-relaxed bg-secondary/60 p-6 rounded-md" data-lang-key="project1CardDesc">Modelo de Machine Learning para prever tendências de vendas com base em dados históricos.</p>
+                                 <button class="project-button font-mono text-main hover:underline" data-lang-key="projectButton" data-title-key="project1Title" data-img="https://placehold.co/800x500/111827/ffffff?text=ML+Model" data-desc-key="project1ModalDesc" data-tech="Python,Scikit-learn,Pandas,Flask" data-demo="#" data-github="#">Ver Detalhes &rarr;</button>
+                             </div>
+                            <div class="overflow-hidden rounded-lg md:order-1">
+                                <img src="https://placehold.co/600x400/111827/ffffff?text=ML+Model" alt="Projeto de Machine Learning" class="project-image w-full h-full object-cover transition-transform duration-500">
+                            </div>
+                        </div>
+                        <div class="project-card grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold text-main mb-3" data-lang-key="project2Title">Automação de Faturamento</h3>
+                                <p class="text-secondary mb-6 leading-relaxed bg-secondary/60 p-6 rounded-md" data-lang-key="project2CardDesc">Robô RPA para automatizar a emissão e envio de faturas fiscais, reduzindo erros manuais.</p>
+                                <button class="project-button font-mono text-main hover:underline" data-lang-key="projectButton" data-title-key="project2Title" data-img="https://placehold.co/800x500/4f46e5/ffffff?text=RPA+Bot" data-desc-key="project2ModalDesc" data-tech="UiPath,SQL,Excel VBA" data-demo="#" data-github="#">Ver Detalhes &rarr;</button>
+                            </div>
+                            <div class="overflow-hidden rounded-lg">
+                                <img src="https://placehold.co/600x400/4f46e5/ffffff?text=RPA+Bot" alt="Projeto de RPA" class="project-image w-full h-full object-cover transition-transform duration-500">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Zoom Parallax Gallery Section -->
+            <section id="gallery" class="py-20 md:py-32 section-fade-in">
+                <div class="container mx-auto px-6 text-center">
+                     <h2 class="text-3xl md:text-4xl font-bold mb-16" data-lang-key="galleryTitle">Galeria Visual</h2>
+                </div>
+                <div id="gallery-container">
+                    <div id="gallery-sticky">
+                        <!-- Images will be injected here by JS -->
+                    </div>
+                </div>
+            </section>
+
+             <!-- New Slider Section -->
+            <section id="slider" class="section-fade-in">
+                <div class="wrapper-slider">
+                    <div class="swiper main-slider">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <div class="item">
+                                    <picture>
+                                        <img src="https://images.unsplash.com/photo-1555229189-b73534307942?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="image" class="w-full h-full object-cover">
+                                    </picture>
+                                    <div class="parent-text">
+                                        <div class="info-text">
+                                            <h2 data-lang-key="slider1Title">Inovação em Cada Linha de Código.</h2>
+                                            <p data-lang-key="slider1Text">Explorando novas tecnologias para criar soluções impactantes e eficientes.</p>
+                                            <a href="#contact" data-lang-key="sliderLearnMore">Saiba Mais</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="swiper-slide">
+                                <div class="item">
+                                    <div class="video">
+                                        <video autoplay loop muted playsinline class="w-full h-full object-cover absolute inset-0" poster="">
+                                            <source src="https://videos.pexels.com/video-files/4354243/4354243-uhd_2560_1440_25fps.mp4" type="video/mp4">
+                                            Seu navegador não suporta vídeo.
+                                        </video>
+                                    </div>
+                                    <div class="parent-text">
+                                        <div class="info-text">
+                                            <h2 data-lang-key="slider2Title">Design Centrado no Usuário.</h2>
+                                            <p data-lang-key="slider2Text">Interfaces intuitivas que proporcionam experiências memoráveis e agradáveis.</p>
+                                            <a href="#contact" data-lang-key="sliderLearnMore">Saiba Mais</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="py-20 md:py-32 section-fade-in container mx-auto px-6">
+                <div class="max-w-2xl mx-auto text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4" data-lang-key="contactTitle">Vamos Conversar?</h2>
+                    <p class="text-lg text-secondary mb-8 leading-relaxed" data-lang-key="contactText">Estou sempre aberto a novas oportunidades e colaborações. Se você tem um projeto em mente ou gostaria de iniciar uma conversa, sinta-se à vontade para me enviar um e-mail.</p>
+                    <a href="mailto:contato@higorbrito.com" class="inline-block bg-[#1e1e1e] text-white font-bold py-3 px-8 text-lg hover:bg-black transition-all duration-300 transform hover:scale-105 font-mono uppercase text-base dark:bg-gray-200 dark:text-black dark:hover:bg-white" data-lang-key="contactButton">
+                        Enviar E-mail
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Improved Footer -->
+    <footer class="bg-secondary text-secondary font-body section-fade-in">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-left">
+                <div>
+                    <h3 class="font-display text-2xl font-bold text-main mb-2" data-lang-key="footerName">Higor Brito</h3>
+                    <p data-lang-key="footerTagline">Engenheiro de Software criando o futuro da web.</p>
+                </div>
+                <div>
+                    <h4 class="font-mono uppercase tracking-wider text-main mb-3" data-lang-key="footerLinksTitle">Links</h4>
+                    <ul>
+                        <li><a href="#about" class="hover:text-main transition-colors" data-lang-key="navAbout">Sobre</a></li>
+                        <li><a href="#timeline" class="hover:text-main transition-colors" data-lang-key="timelineTitle">Timeline</a></li>
+                        <li><a href="#experience" class="hover:text-main transition-colors" data-lang-key="navExperience">Experiência</a></li>
+                        <li><a href="#projects" class="hover:text-main transition-colors" data-lang-key="navProjects">Projetos</a></li>
+                        <li><a href="#contact" class="hover:text-main transition-colors" data-lang-key="navContact">Contato</a></li>
+                    </ul>
+                </div>
+                <div>
+                     <h4 class="font-mono uppercase tracking-wider text-main mb-3" data-lang-key="footerSocialTitle">Redes Sociais</h4>
+                    <div class="flex justify-center md:justify-start space-x-6">
+                        <a href="https://linkedin.com/in/higorbrito" target="_blank" rel="noopener noreferrer" class="hover:text-main transition-transform duration-300 hover:scale-110" aria-label="LinkedIn"><i class="fa-brands fa-linkedin text-2xl"></i></a>
+                        <a href="mailto:contato@higorbrito.com" target="_blank" rel="noopener noreferrer" class="hover:text-main transition-transform duration-300 hover:scale-110" aria-label="Email"><i class="fa-solid fa-envelope text-2xl"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-main mt-8 pt-6 text-center text-sm">
+                <p data-lang-key="footerCopyright">&copy; 2024 Higor Brito. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Settings Button -->
+    <div class="fixed bottom-5 right-5 z-50">
+        <button id="settings-button" class="bg-secondary text-main w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-white transition-colors transform hover:scale-110 duration-300 border border-main">
+            <i class="fas fa-cog text-xl"></i>
+        </button>
+    </div>
+
+    <!-- Modals -->
+    <div id="project-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 opacity-0 invisible">
+        <div id="modal-content" class="modal-content max-w-4xl w-full rounded-lg relative transform scale-95 opacity-0">
+            <div class="bg-secondary p-8 rounded-lg">
+                <button id="modal-close-project" class="absolute top-4 right-4 text-secondary hover:text-main transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <img id="modal-img" src="" alt="Imagem do Projeto" class="w-full h-full object-cover rounded-md">
+                    <div>
+                        <h2 id="modal-title" class="text-3xl font-bold mb-2"></h2>
+                        <div id="modal-tech-stack" class="flex flex-wrap gap-2 mb-4">
+                            <!-- Tech tags go here -->
+                        </div>
+                        <p id="modal-desc" class="text-secondary mb-6 leading-relaxed font-body"></p>
+                        <div class="flex space-x-4 font-mono uppercase text-sm">
+                            <a id="modal-demo" href="#" target="_blank" rel="noopener noreferrer" class="inline-block bg-accent-dark text-white font-semibold py-2 px-6 rounded-sm hover:opacity-80 transition-opacity dark:bg-gray-200 dark:text-black" data-lang-key="modalDemoButton">Ver Demo</a>
+                            <a id="modal-github" href="#" target="_blank" rel="noopener noreferrer" class="inline-block border border-main text-main font-semibold py-2 px-6 rounded-sm hover:bg-main/10 transition-colors">GitHub</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="settings-modal" class="modal fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-70 opacity-0 invisible">
+        <div id="modal-content-settings" class="modal-content max-w-md w-full rounded-lg relative transform scale-95 opacity-0">
+             <div class="bg-secondary p-8 rounded-lg">
+                <button id="modal-close-settings" class="absolute top-4 right-4 text-secondary hover:text-main transition-colors"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                <h2 class="text-2xl font-bold mb-6 text-center" data-lang-key="languageModalTitle">Configurações</h2>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span data-lang-key="darkMode" class="font-semibold">Modo Escuro</span>
+                        <label class="toggle-switch relative inline-block">
+                            <input type="checkbox" id="dark-mode-toggle">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="border-t border-main"></div>
+                    <h3 class="font-semibold pt-2" data-lang-key="languageTitle">Idioma</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button class="lang-button border border-main hover:bg-main/10 text-main font-bold py-2 px-4 rounded-md transition-colors" data-lang="pt">Português</button>
+                        <button class="lang-button border border-main hover:bg-main/10 text-main font-bold py-2 px-4 rounded-md transition-colors" data-lang="en">English</button>
+                        <button class="lang-button border border-main hover:bg-main/10 text-main font-bold py-2 px-4 rounded-md transition-colors" data-lang="jp">日本語</button>
+                        <button class="lang-button border border-main hover:bg-main/10 text-main font-bold py-2 px-4 rounded-md transition-colors" data-lang="ko">한국어</button>
+                    </div>
+                </div>
+             </div>
+        </div>
+    </div>
+    
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script>
+        const translations = {
+            pt: {
+                heroName: "Higor Brito.", heroSubtitle: "Eu construo soluções para a web.", heroDescription: "Sou um engenheiro de software focado em criar experiências digitais excepcionais. Atualmente, minha paixão está em desenvolver produtos acessíveis e centrados no ser humano.",
+                navAbout: "Sobre", navProjects: "Projetos", navContact: "Contato", navContactMobile: "Contato", navExperience: "Experiência",
+                aboutTitle: "Sobre Mim", aboutText: "Olá! Sou Higor Brito, Engenheiro de Software focado em transformar ideias complexas em produtos digitais intuitivos e de alta performance. Minha expertise abrange desde o desenvolvimento web e mobile até soluções avançadas de Machine Learning e automação com RPA, sempre buscando o equilíbrio perfeito entre inovação, design e funcionalidade.",
+                timelineTitle: "Timeline",
+                skillsTitle: "Habilidades & Ferramentas",
+                experienceTitle: "Empresas e Tecnologias",
+                projectsTitle: "Projetos em Destaque", galleryTitle: "Galeria Visual",
+                project1Title: "Análise Preditiva de Vendas", project1CardDesc: "Modelo de Machine Learning para prever tendências de vendas com base em dados históricos.", project1ModalDesc: "Desenvolvimento de um pipeline de Machine Learning completo, desde a coleta e limpeza de dados até o treinamento e deploy de um modelo de regressão para prever volumes de vendas. O projeto utiliza Python, Scikit-learn e foi implantado em um serviço de nuvem para acesso via API.",
+                project2Title: "Automação de Faturamento", project2CardDesc: "Robô RPA para automatizar a emissão e envio de faturas fiscais, reduzindo erros manuais.", project2ModalDesc: "Este projeto de RPA foi desenvolvido para automatizar o processo de faturamento de uma empresa. O robô extrai dados de planilhas, preenche formulários em um sistema web legado, gera as faturas em PDF e as envia por e-mail para os clientes, registrando todas as ações em um log de auditoria.",
+                projectButton: "Ver Detalhes →", modalTechStack: "Tecnologias",
+                slider1Title: "Inovação em Cada Linha de Código.", slider1Text: "Explorando novas tecnologias para criar soluções impactantes e eficientes.", slider2Title: "Design Centrado no Usuário.", slider2Text: "Interfaces intuitivas que proporcionam experiências memoráveis e agradáveis.", sliderLearnMore: "Saiba Mais",
+                contactTitle: "Vamos Conversar?", contactText: "Estou sempre aberto a novas oportunidades e colaborações. Se você tem um projeto em mente ou gostaria de iniciar uma conversa, sinta-se à vontade para me enviar um e-mail.", contactButton: "Enviar E-mail",
+                footerName: "Higor Brito", footerTagline: "Engenheiro de Software criando o futuro da web.", footerLinksTitle: "Links", footerSocialTitle: "Redes Sociais", footerCopyright: "© 2024 Higor Brito. Todos os direitos reservados.",
+                languageModalTitle: "Configurações", darkMode: "Modo Escuro", languageTitle: "Idioma", modalDemoButton: "Ver Demo"
+            },
+            en: {
+                heroName: "Higor Brito.", heroSubtitle: "I build solutions for the web.", heroDescription: "I am a software engineer focused on creating exceptional digital experiences. Currently, my passion lies in developing accessible and human-centered products.",
+                navAbout: "About", navProjects: "Projects", navContact: "Contact", navContactMobile: "Contact", navExperience: "Experience",
+                aboutTitle: "About Me", aboutText: "Hello! I'm Higor Brito, a Software Engineer focused on transforming complex ideas into intuitive, high-performance digital products. My expertise ranges from web and mobile development to advanced Machine Learning and RPA automation, always seeking the perfect balance between innovation, design, and functionality.",
+                timelineTitle: "Timeline",
+                skillsTitle: "Skills & Tools",
+                experienceTitle: "Companies & Technologies",
+                projectsTitle: "Featured Projects", galleryTitle: "Visual Gallery",
+                project1Title: "Predictive Sales Analysis", project1CardDesc: "A Machine Learning model to forecast sales trends based on historical data.", project1ModalDesc: "Development of a complete Machine Learning pipeline, from data collection and cleaning to the training and deployment of a regression model to predict sales volumes. The project uses Python, Scikit-learn, and was deployed on a cloud service for API access.",
+                project2Title: "Billing Automation", project2CardDesc: "An RPA bot to automate the issuance and sending of fiscal invoices, reducing manual errors.", project2ModalDesc: "This RPA project was developed to automate a company's billing process. The robot extracts data from spreadsheets, fills out forms in a legacy web system, generates invoices in PDF, and emails them to clients, logging all actions for auditing.",
+                projectButton: "View Details →", modalTechStack: "Technologies",
+                slider1Title: "Innovation in Every Line of Code.", slider1Text: "Exploring new technologies to create impactful and efficient solutions.", slider2Title: "User-Centered Design.", slider2Text: "Intuitive interfaces that provide memorable and enjoyable experiences.", sliderLearnMore: "Learn More",
+                contactTitle: "Let's Talk?", contactText: "I'm always open to new opportunities and collaborations. If you have a project in mind or would like to start a conversation, feel free to send me an email.", contactButton: "Send Email",
+                footerName: "Higor Brito", footerTagline: "Software Engineer creating the future of the web.", footerLinksTitle: "Links", footerSocialTitle: "Social Media", footerCopyright: "© 2024 Higor Brito. All rights reserved.",
+                languageModalTitle: "Settings", darkMode: "Dark Mode", languageTitle: "Language", modalDemoButton: "View Demo"
+            },
+            jp: {
+                heroName: "ヒゴール・ブリト.", heroSubtitle: "ウェブ向けのソリューションを構築します。", heroDescription: "私は卓越したデジタル体験を創造することに焦点を当てたソフトウェアエンジニアです。現在、私の情熱は、アクセシブルで人間中心の製品を開発することにあります。",
+                navAbout: "概要", navProjects: "プロジェクト", navContact: "連絡先", navContactMobile: "連絡先", navExperience: "経験",
+                aboutTitle: "私について", aboutText: "こんにちは！私はヒゴール・ブリト、複雑なアイデアを直感的で高性能なデジタル製品に変えることに焦点を当てたソフトウェアエンジニアです。私の専門知識は、ウェブおよびモバイル開発から高度な機械学習およびRPA自動化まで多岐にわたり、常に革新、デザイン、機能性の完璧なバランスを追求しています。",
+                timelineTitle: "タイムライン",
+                skillsTitle: "スキルとツール",
+                experienceTitle: "企業と技術",
+                projectsTitle: "注目のプロジェクト", galleryTitle: "ビジュアルギャラリー",
+                project1Title: "予測販売分析", project1CardDesc: "過去のデータに基づいて販売トレンドを予測する機械学習モデル。", project1ModalDesc: "データ収集とクリーニングから、販売量を予測するための回帰モデルのトレーニングと展開まで、完全な機械学習パイプラインの開発。このプロジェクトではPython、Scikit-learnを使用し、APIアクセスのためにクラウドサービスに展開されました。",
+                project2Title: "請求自動化", project2CardDesc: "財政請求書の発行と送信を自動化し、手動エラーを削減するRPAボット。", project2ModalDesc: "このRPAプロジェクトは、企業の請求プロセスを自動化するために開発されました。ロボットはスプレッドシートからデータを抽出し、レガシーウェブシステムのフォームに記入し、PDFで請求書を生成し、監査のためにすべてのアクションを記録しながら、顧客に電子メールで送信します。",
+                projectButton: "詳細を見る →", modalTechStack: "技術",
+                slider1Title: "すべてのコード行に革新を。", slider1Text: "インパクトのある効率的なソリューションを作成するために新しい技術を探求します。", slider2Title: "ユーザー中心の設計。", slider2Text: "記憶に残る楽しい体験を提供する直感的なインターフェース。", sliderLearnMore: "もっと詳しく",
+                contactTitle: "話しませんか？", contactText: "私は常に新しい機会と協力にオープンです。プロジェクトを念頭に置いている場合や、会話を始めたい場合は、お気軽にメールを送ってください。", contactButton: "メールを送信",
+                footerName: "ヒゴール・ブリト", footerTagline: "ウェブの未来を創造するソフトウェアエンジニア。", footerLinksTitle: "リンク", footerSocialTitle: "ソーシャルメディア", footerCopyright: "© 2024 ヒゴール・ブリト. 全著作権所有。",
+                languageModalTitle: "設定", darkMode: "ダークモード", languageTitle: "言語", modalDemoButton: "デモを見る"
+            },
+            ko: {
+                heroName: "히고르 브리토.", heroSubtitle: "웹을 위한 솔루션을 만듭니다.", heroDescription: "저는 뛰어난 디지털 경험을 만드는 데 중점을 둔 소프트웨어 엔지니어입니다. 현재 저의 열정은 접근성 있고 인간 중심적인 제품을 개발하는 데 있습니다。",
+                navAbout: "소개", navProjects: "프로젝트", navContact: "연락처", navContactMobile: "連絡처", navExperience: "경험",
+                aboutTitle: "자기소개", aboutText: "안녕하세요! 저는 복잡한 아이디어를 직관적이고 고성능의 디지털 제품으로 변환하는 데 중점을 둔 소프트웨어 엔지니어, 히고르 브리토입니다. 저의 전문 분야는 웹 및 모바일 개발에서부터 고급 기계 학습 및 RPA 자동화에 이르기까지 다양하며, 항상 혁신, 디자인 및 기능성의 완벽한 균형을 추구합니다。",
+                timelineTitle: "타임라인",
+                skillsTitle: "기술 및 도구",
+                experienceTitle: "회사 및 기술",
+                projectsTitle: "주요 프로젝트", galleryTitle: "비주얼 갤러리",
+                project1Title: "예측 판매 분석", project1CardDesc: "과거 데이터를 기반으로 판매 추세를 예측하는 기계 학습 모델。", project1ModalDesc: "데이터 수집 및 정제에서부터 판매량을 예측하기 위한 회귀 모델의 훈련 및 배포에 이르기까지 완전한 기계 학습 파이프라인 개발. 이 프로젝트는 Python, Scikit-learn을 사용하며 API 액세스를 위해 클라우드 서비스에 배포되었습니다。",
+                project2Title: "청구 자동화", project2CardDesc: "재정 송장의 발행 및 전송을 자동화하여 수동 오류를 줄이는 RPA 봇。", project2ModalDesc: "이 RPA 프로젝트는 회사의 청구 프로세스를 자동화하기 위해 개발되었습니다. 로봇은 스프레드시트에서 데이터를 추출하고, 레거시 웹 시스템의 양식을 작성하며, PDF로 송장을 생성하고, 감사를 위해 모든 작업을 기록하면서 고객에게 이메일로 보냅니다。",
+                projectButton: "자세히 보기 →", modalTechStack: "기술",
+                slider1Title: "모든 코드 라인에 혁신을 담다.", slider1Text: "영향력 있고 효율적인 솔루션을 만들기 위해 새로운 기술을 탐구합니다。", slider2Title: "사용자 중심 디자인.", slider2Text: "기억에 남고 즐거운 경험을 제공하는 직관적인 인터페이스。", sliderLearnMore: "더 알아보기",
+                contactTitle: "이야기할까요?", contactText: "저는 항상 새로운 기회와 협력에 열려 있습니다. 프로젝트를 염두에 두고 있거나 대화를 시작하고 싶다면 언제든지 이메일을 보내주세요。", contactButton: "이메일 보내기",
+                footerName: "히고르 브리토", footerTagline: "웹의 미래를 만드는 소프트웨어 엔지니어。", footerLinksTitle: "링크", footerSocialTitle: "소셜 미디어", footerCopyright: "© 2024 히고르 브리토. 모든 권리 보유。",
+                languageModalTitle: "설정", darkMode: "다크 모드", languageTitle: "언어", modalDemoButton: "데모 보기"
+            }
+        };
+
+        const setLanguage = (lang) => {
+            const elements = document.querySelectorAll('[data-lang-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-lang-key');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+            document.documentElement.lang = lang.split('-')[0];
+            localStorage.setItem('portfolioLanguage', lang);
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const lenis = new Lenis();
+            function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+            requestAnimationFrame(raf);
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.section-fade-in').forEach(section => observer.observe(section));
+
+            const openModal = (modal, content) => {
+                modal.classList.remove('opacity-0', 'invisible');
+                setTimeout(() => content.classList.remove('scale-95', 'opacity-0'), 10);
+                document.body.style.overflow = 'hidden';
+            };
+            const closeModal = (modal, content) => {
+                content.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => modal.classList.add('opacity-0', 'invisible'), 300);
+                document.body.style.overflow = 'auto';
+            };
+
+            const projectModal = document.getElementById('project-modal');
+            const projectModalContent = document.getElementById('modal-content');
+            const projectCloseButton = document.getElementById('modal-close-project');
+            const projectButtons = document.querySelectorAll('.project-button');
+            const modalImg = document.getElementById('modal-img');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDesc = document.getElementById('modal-desc');
+            const modalDemo = document.getElementById('modal-demo');
+            const modalGithub = document.getElementById('modal-github');
+            const modalTechStack = document.getElementById('modal-tech-stack');
+            
+            projectButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const currentLang = localStorage.getItem('portfolioLanguage') || 'pt';
+                    modalImg.src = button.dataset.img;
+                    modalTitle.textContent = translations[currentLang][button.dataset.titleKey] || '';
+                    modalDesc.textContent = translations[currentLang][button.dataset.descKey] || '';
+                    modalDemo.href = button.dataset.demo;
+                    modalGithub.href = button.dataset.github;
+
+                    modalTechStack.innerHTML = '';
+                    const techList = button.dataset.tech.split(',');
+                    techList.forEach(tech => {
+                        const tag = document.createElement('span');
+                        tag.className = 'bg-main/80 text-secondary text-xs font-mono px-2 py-1 rounded';
+                        tag.textContent = tech;
+                        modalTechStack.appendChild(tag);
+                    });
+
+                    openModal(projectModal, projectModalContent);
+                });
+            });
+            projectCloseButton.addEventListener('click', () => closeModal(projectModal, projectModalContent));
+            projectModal.addEventListener('click', (e) => { if (e.target === projectModal) closeModal(projectModal, projectModalContent); });
+
+            const settingsModal = document.getElementById('settings-modal');
+            const settingsModalContent = document.getElementById('modal-content-settings');
+            const settingsButton = document.getElementById('settings-button');
+            const settingsCloseButton = document.getElementById('modal-close-settings');
+            const langButtons = document.querySelectorAll('.lang-button');
+            settingsButton.addEventListener('click', () => openModal(settingsModal, settingsModalContent));
+            settingsCloseButton.addEventListener('click', () => closeModal(settingsModal, settingsModalContent));
+            settingsModal.addEventListener('click', (e) => { if (e.target === settingsModal) closeModal(settingsModal, settingsModalContent); });
+            
+            langButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    setLanguage(button.dataset.lang);
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (!projectModal.classList.contains('invisible')) closeModal(projectModal, projectModalContent);
+                    if (!settingsModal.classList.contains('invisible')) closeModal(settingsModal, settingsModalContent);
+                }
+            });
+
+            // --- Dark Mode Logic ---
+            const darkModeToggle = document.getElementById('dark-mode-toggle');
+            const applyTheme = (theme) => {
+                if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    darkModeToggle.checked = true;
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    darkModeToggle.checked = false;
+                }
+            };
+            
+            darkModeToggle.addEventListener('change', () => {
+                const theme = darkModeToggle.checked ? 'dark' : 'light';
+                localStorage.setItem('portfolioTheme', theme);
+                applyTheme(theme);
+            });
+            
+            const savedTheme = localStorage.getItem('portfolioTheme');
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            applyTheme(savedTheme || (prefersDark ? 'dark' : 'light'));
+
+            // --- Language & Slider Initialization ---
+            const savedLang = localStorage.getItem('portfolioLanguage') || 'pt';
+            setLanguage(savedLang);
+            
+            new Swiper(".main-slider", {
+                effect: 'fade', speed: 1000, fadeEffect: { crossFade: true }, loop: true,
+                pagination: { el: ".swiper-pagination", clickable: true },
+                autoplay: { delay: 6000, disableOnInteraction: false }
+            });
+            
+            // --- Zoom Parallax Logic ---
+            const galleryImages = [
+                { src: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80', alt: 'Modern architecture building' },
+                { src: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80', alt: 'Urban cityscape at sunset' },
+                { src: 'https://images.unsplash.com/photo-1557683316-973673baf926?w=800&h=800&fit=crop&crop=entropy&auto=format&q=80', alt: 'Abstract geometric pattern' },
+                { src: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80', alt: 'Mountain landscape' },
+                { src: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&h=800&fit=crop&crop=entropy&auto=format&q=80', alt: 'Minimalist design elements' },
+                { src: 'https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80', alt: 'Ocean waves and beach' },
+                { src: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1280&h=720&fit=crop&crop=entropy&auto=format&q=80', alt: 'Forest trees and sunlight' },
+            ];
+            const galleryContainer = document.getElementById('gallery-container');
+            const stickyContainer = document.getElementById('gallery-sticky');
+            galleryImages.forEach((img, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `gallery-image-wrapper gallery-image-wrapper-${index}`;
+                const innerDiv = document.createElement('div');
+                const imageEl = document.createElement('img');
+                imageEl.src = img.src; imageEl.alt = img.alt;
+                innerDiv.appendChild(imageEl); wrapper.appendChild(innerDiv);
+                stickyContainer.appendChild(wrapper);
+            });
+            const imageElements = stickyContainer.querySelectorAll('.gallery-image-wrapper');
+            const scales = [[1, 4], [1, 5], [1, 6], [1, 5], [1, 6], [1, 8], [1, 9]];
+            const handleParallaxScroll = () => {
+                const rect = galleryContainer.getBoundingClientRect();
+                const scrollableHeight = galleryContainer.offsetHeight - window.innerHeight;
+                const scrollProgress = Math.max(0, Math.min(1, -rect.top / scrollableHeight));
+                imageElements.forEach((el, index) => {
+                    const [minScale, maxScale] = scales[index % scales.length];
+                    const currentScale = minScale + (maxScale - minScale) * scrollProgress;
+                    el.style.transform = `scale(${currentScale})`;
+                });
+            };
+            window.addEventListener('scroll', handleParallaxScroll);
+
+            // --- Logo Carousel Logic ---
+            function setupLogoCarousel() {
+                const container = document.getElementById('logo-carousel-container');
+                if (!container) return;
+
+                const logos = [
+                    { name: 'Samsung', light: 'https://raw.githubusercontent.com/HigorJB/source-img/refs/heads/main/Samsung_Orig_Wordmark_BLACK_RGB.png', dark: 'https://raw.githubusercontent.com/HigorJB/source-img/refs/heads/main/Samsung_Orig_Wordmark_WHITE_RGB.png' },
+                    { name: 'Whirlpool', light: 'https://raw.githubusercontent.com/HigorJB/source-img/refs/heads/main/2021_Whirlpool_Corp_2C_Black_RGB.png', dark: 'https://raw.githubusercontent.com/HigorJB/source-img/refs/heads/main/2021_Whirlpool_Corp_2C_White_RGB.png' },
+                    { name: 'Brastemp', light: 'https://logodownload.org/wp-content/uploads/2017/04/brastemp-logo.png', dark: 'https://logodownload.org/wp-content/uploads/2017/04/brastemp-logo.png' },
+                    { name: 'Consul', light: 'https://logodownload.org/wp-content/uploads/2014/04/consul-logo-1-1.png', dark: 'https://logodownload.org/wp-content/uploads/2014/04/consul-logo-1-1.png' },
+                    { name: 'Python', light: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg', dark: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg' },
+                    { name: 'JavaScript', light: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg', dark: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/javascript/javascript-original.svg' },
+                    { name: 'React', light: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg', dark: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg' },
+                    { name: 'Docker', light: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg', dark: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg' },
+                    { name: 'AWS', light: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg', dark: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/amazonwebservices/amazonwebservices-original-wordmark.svg' },
+                    { name: 'TensorFlow', light: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tensorflow/tensorflow-original.svg', dark: 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tensorflow/tensorflow-original.svg' },
+                ];
+                
+                const shuffledLogos = logos.sort(() => 0.5 - Math.random());
+
+                const numColumns = 5;
+                const columns = Array.from({ length: numColumns }, () => []);
+                shuffledLogos.forEach((logo, i) => columns[i % numColumns].push(logo));
+
+                columns.forEach((colLogos, colIndex) => {
+                    const columnEl = document.createElement('div');
+                    columnEl.className = 'relative h-16 w-32 flex items-center justify-center';
+                    container.appendChild(columnEl);
+
+                    let currentIndex = 0;
+                    const cycleLogos = () => {
+                        const existingWrapper = columnEl.querySelector('div');
+                        if (existingWrapper) {
+                            existingWrapper.classList.remove('opacity-100');
+                            existingWrapper.classList.add('opacity-0');
+                            setTimeout(() => existingWrapper.remove(), 500);
+                        }
+
+                        const logo = colLogos[currentIndex];
+                        const logoWrapper = document.createElement('div');
+                        logoWrapper.className = 'absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500 ease-in-out';
+                        
+                        // Corrected and more robust logic for handling dark/light mode logos
+                        if (logo.dark && logo.light !== logo.dark) {
+                             logoWrapper.innerHTML = `
+                                <img src="${logo.light}" alt="${logo.name}" class="max-h-12 max-w-full object-contain block dark:hidden" onerror="this.style.display='none'">
+                                <img src="${logo.dark}" alt="${logo.name}" class="max-h-12 max-w-full object-contain hidden dark:block" onerror="this.style.display='none'">
+                            `;
+                        } else {
+                            logoWrapper.innerHTML = `<img src="${logo.light}" alt="${logo.name}" class="max-h-12 max-w-full object-contain" onerror="this.style.display='none'">`;
+                        }
+                        
+                        columnEl.appendChild(logoWrapper);
+
+                        setTimeout(() => {
+                            logoWrapper.classList.remove('opacity-0');
+                            logoWrapper.classList.add('opacity-100');
+                        }, 50);
+
+                        currentIndex = (currentIndex + 1) % colLogos.length;
+                    };
+                    
+                    setTimeout(() => {
+                        cycleLogos();
+                        setInterval(cycleLogos, 3000 + (Math.random() * 1000 - 500));
+                    }, colIndex * 400);
+                });
+            }
+            setupLogoCarousel();
+        });
+    </script>
+</body>
+</html>
+
